@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internship Tracker | Resume Project</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A premium Internship Tracker web application for B.Tech Mathematics and Computing students to organize, search, filter, and track internship applications in one dashboard.">
+  <meta name="author" content="Nakul Timmana">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation / Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Internship Tracker</h1>
+          <p class="subtitle">MIT Manipal | Mathematics & Computing Resume Project</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-icon" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button id="exportCsvBtn" class="btn btn-secondary">
+          <i class="fa-solid fa-file-export"></i> <span>Export CSV</span>
+        </button>
+        <label for="importCsvInput" class="btn btn-secondary btn-file-label">
+          <i class="fa-solid fa-file-import"></i> <span>Import CSV</span>
+          <input type="file" id="importCsvInput" accept=".csv" style="display: none;">
+        </label>
+        <button id="clearAllBtn" class="btn btn-danger-outline">
+          <i class="fa-solid fa-trash-can"></i> <span>Clear All</span>
+        </button>
+        <button id="openAddModalBtn" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i> Add Application
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Statistics Overview Dashboard -->
+    <section class="stats-section" aria-label="Application Metrics">
+      <div class="stats-grid">
+        <div class="stat-card" id="statTotal">
+          <div class="stat-icon icon-total"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Applications</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statApplied">
+          <div class="stat-icon icon-applied"><i class="fa-solid fa-paper-plane"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Applied</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statFollowUp">
+          <div class="stat-icon icon-followup"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Follow-up Needed</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statInterview">
+          <div class="stat-icon icon-interview"><i class="fa-solid fa-calendar-check"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Interviews</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statSelected">
+          <div class="stat-icon icon-selected"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Selected</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statRejected">
+          <div class="stat-icon icon-rejected"><i class="fa-solid fa-circle-xmark"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Rejected</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+        <div class="stat-card" id="statHighPriority">
+          <div class="stat-icon icon-priority"><i class="fa-solid fa-circle-exclamation"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">High Priority</span>
+            <h2 class="stat-value">0</h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters, Search & Sort Panel -->
+    <section class="controls-section" aria-label="Filters and Search">
+      <div class="controls-panel">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="searchInput" placeholder="Search by Company, Role, Email, or Location...">
+        </div>
+        <div class="filters-group">
+          <div class="filter-item">
+            <label for="statusFilter"><i class="fa-solid fa-filter"></i> Status</label>
+            <select id="statusFilter">
+              <option value="All">All Statuses</option>
+              <option value="Not Applied">Not Applied</option>
+              <option value="Applied">Applied</option>
+              <option value="Follow-up Needed">Follow-up Needed</option>
+              <option value="Interview Scheduled">Interview Scheduled</option>
+              <option value="Selected">Selected</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="priorityFilter"><i class="fa-solid fa-triangle-exclamation"></i> Priority</label>
+            <select id="priorityFilter">
+              <option value="All">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="sortBy"><i class="fa-solid fa-arrow-down-a-z"></i> Sort By</label>
+            <select id="sortBy">
+              <option value="newest">Newest Application</option>
+              <option value="oldest">Oldest Application</option>
+              <option value="followup">Nearest Follow-up</option>
+              <option value="company">Company (A-Z)</option>
+              <option value="priority">Priority (High first)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content List Grid -->
+    <section class="applications-section" aria-label="Internship Applications">
+      <!-- Grid layout for desktop, converts to cards for mobile -->
+      <div id="applicationsGrid" class="applications-grid">
+        <!-- Rendered dynamically via script.js -->
+      </div>
+
+      <!-- Empty State UI -->
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-illustration">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <h3>No internship applications found</h3>
+        <p>Start tracking your applications by adding your first company details!</p>
+        <button id="emptyStateAddBtn" class="btn btn-primary btn-large">
+          <i class="fa-solid fa-plus"></i> Add First Application
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Nakul Timmana. Internship Tracker built with HTML, CSS, and vanilla JavaScript.</p>
+      <p class="MIT-tag">MIT Manipal | Mathematics and Computing Student</p>
+    </div>
+  </footer>
+
+  <!-- Application Add/Edit Modal Form -->
+  <div id="formModal" class="modal-overlay hidden" aria-hidden="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Internship Application</h2>
+        <button id="closeModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="applicationForm" novalidate>
+        <input type="hidden" id="editIndex" value="-1">
+        
+        <div class="form-grid">
+          <!-- Company Name -->
+          <div class="form-group">
+            <label for="companyName">Company Name <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-building form-input-icon"></i>
+              <input type="text" id="companyName" placeholder="e.g. EyeROV" required>
+            </div>
+            <span class="error-msg" id="companyNameError"></span>
+          </div>
+
+          <!-- Role Applied For -->
+          <div class="form-group">
+            <label for="roleApplied">Role Applied For <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-briefcase form-input-icon"></i>
+              <input type="text" id="roleApplied" placeholder="e.g. Software Intern" required>
+            </div>
+            <span class="error-msg" id="roleAppliedError"></span>
+          </div>
+
+          <!-- Contact Email -->
+          <div class="form-group">
+            <label for="contactEmail">Contact Email <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope form-input-icon"></i>
+              <input type="email" id="contactEmail" placeholder="e.g. careers@eyerov.com" required>
+            </div>
+            <span class="error-msg" id="contactEmailError"></span>
+          </div>
+
+          <!-- Company Website -->
+          <div class="form-group">
+            <label for="companyWebsite">Company Website</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-globe form-input-icon"></i>
+              <input type="url" id="companyWebsite" placeholder="e.g. https://eyerov.com">
+            </div>
+            <span class="error-msg" id="companyWebsiteError"></span>
+          </div>
+
+          <!-- Company Location -->
+          <div class="form-group">
+            <label for="companyLocation">Company Location</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-location-dot form-input-icon"></i>
+              <input type="text" id="companyLocation" placeholder="e.g. Kochi">
+            </div>
+            <span class="error-msg" id="companyLocationError"></span>
+          </div>
+
+          <!-- Contact Person / HR -->
+          <div class="form-group">
+            <label for="contactPerson">Contact Person / HR Name</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user-tie form-input-icon"></i>
+              <input type="text" id="contactPerson" placeholder="e.g. Jane Doe">
+            </div>
+            <span class="error-msg" id="contactPersonError"></span>
+          </div>
+
+          <!-- Application Date -->
+          <div class="form-group">
+            <label for="applicationDate">Application Date <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-calendar form-input-icon"></i>
+              <input type="date" id="applicationDate" required>
+            </div>
+            <span class="error-msg" id="applicationDateError"></span>
+          </div>
+
+          <!-- Follow-up Date -->
+          <div class="form-group">
+            <label for="followupDate">Follow-up Date</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-calendar-days form-input-icon"></i>
+              <input type="date" id="followupDate">
+            </div>
+            <span class="error-msg" id="followupDateError"></span>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label for="applicationStatus">Application Status <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-circle-question form-input-icon"></i>
+              <select id="applicationStatus" required>
+                <option value="Not Applied">Not Applied</option>
+                <option value="Applied" selected>Applied</option>
+                <option value="Follow-up Needed">Follow-up Needed</option>
+                <option value="Interview Scheduled">Interview Scheduled</option>
+                <option value="Selected">Selected</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <span class="error-msg" id="applicationStatusError"></span>
+          </div>
+
+          <!-- Priority -->
+          <div class="form-group">
+            <label for="priorityLevel">Priority Level <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-triangle-exclamation form-input-icon"></i>
+              <select id="priorityLevel" required>
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <span class="error-msg" id="priorityLevelError"></span>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group full-width" style="margin-top: 1rem;">
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="3" placeholder="Add specific details, tech stack notes, interview tips..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelFormBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="saveFormBtn" class="btn btn-primary">Save Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Dialog Modal -->
+  <div id="confirmModal" class="modal-overlay hidden" aria-hidden="true" role="dialog">
+    <div class="modal-card confirm-card">
+      <div class="confirm-icon" id="confirmIcon">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 id="confirmTitle">Confirm Action</h3>
+      <p id="confirmMessage">Are you sure you want to perform this action?</p>
+      <div class="confirm-actions">
+        <button id="confirmCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="confirmConfirmBtn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
